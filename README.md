@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bandeira Barber — Marcações
 
-## Getting Started
+Web app de marcações para a barbearia. Tem duas partes:
 
-First, run the development server:
+- **Clientes** (`/`): escolhem o serviço, o barbeiro e a hora, e marcam só com nome + telemóvel. Recebem SMS/email de confirmação e um lembrete na véspera. Podem cancelar pelo link que recebem.
+- **Gestão** (`/admin`): a agenda do dia, marcações feitas ao balcão, bloqueio de horas e férias, ficha de cada cliente com notas, estatísticas (faturação, ocupação, faltas, horas de maior procura, clientes a recuperar) e definições (serviços, preços, horários).
+
+Stack: Next.js 16 + Postgres (Supabase) + Vercel. SMS via Twilio, email via Resend (ambos opcionais).
+
+## Correr localmente
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # e editar os valores
+npm run db:dev               # base de dados local (deixar a correr noutro terminal)
+npm run db:setup             # cria tabelas, serviços, horários e a conta do gestor
+npm run db:demo              # (opcional) 4 meses de dados fictícios para experimentar
+npm run dev                  # http://localhost:3100  e  http://localhost:3100/admin
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Pôr online (grátis)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Supabase** (supabase.com) → criar projeto (região: Europa) → *Connect* → copiar a connection string do **Transaction pooler** (porta 6543).
+2. No computador, pôr essa string em `DATABASE_URL` no `.env.local`, apagar a linha `DATABASE_POOL_MAX` e correr `npm run db:setup`.
+3. **Vercel** (vercel.com) → importar o repositório do GitHub → em *Environment Variables* colar as variáveis do `.env.example` (sem `DATABASE_POOL_MAX`), com `APP_URL` igual ao domínio final.
+4. O cron dos lembretes (`vercel.json`) corre todos os dias às 17h UTC (18h em Lisboa no verão). A Vercel envia o `CRON_SECRET` automaticamente.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### SMS (Twilio)
+Criar conta → comprar/ativar um remetente → `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM` (um nome alfanumérico como `BandeiraBrb` funciona em Portugal). Custa cerca de 0,05 € por SMS. Sem estas variáveis, os SMS aparecem só nos logs.
 
-## Learn More
+### Email (Resend)
+Criar conta → verificar o domínio → `RESEND_API_KEY` e `EMAIL_FROM`. O plano grátis dá 3000 emails/mês.
 
-To learn more about Next.js, take a look at the following resources:
+## Coisas a confirmar com o barbeiro
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Duração de cada serviço (pus 30 / 45 / 20 min, é só editar em Definições)
+- Horário real de cada um e a pausa de almoço (pus terça a sábado, 9:30–13:00 e 14:30–19:30)
+- Nome do segundo barbeiro, morada, telefone e Instagram
+- Regras: antecedência mínima (60 min), até quantos dias se pode marcar (30) e até quando se pode cancelar (2h antes)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Estrutura
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Onde | O quê |
+|---|---|
+| `db/schema.sql` | Tabelas. A restrição `no_overlap` impede marcações sobrepostas, mesmo em simultâneo |
+| `src/lib/availability.ts` | Cálculo dos horários livres |
+| `src/lib/booking.ts` | Criar marcação (validação, cliente, “qualquer barbeiro”) |
+| `src/lib/notify.ts` | Textos e envio de SMS/email |
+| `src/lib/stats.ts` | Consultas das estatísticas |
+| `src/app/marcar` | Fluxo de marcação do cliente |
+| `src/app/m/[token]` | Página da marcação (ver, calendário, cancelar) |
+| `src/app/admin` | Área de gestão |

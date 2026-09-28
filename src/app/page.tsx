@@ -1,69 +1,97 @@
-import Image from "next/image";
+import Link from "next/link";
+import { getBarbers, getServices, getSettings, sql } from "@/lib/db";
+import { euros, WEEKDAYS } from "@/lib/time";
 
-export default function Home() {
+export default async function Home() {
+  const [settings, services, barbers, hours] = await Promise.all([
+    getSettings(),
+    getServices(),
+    getBarbers(),
+    sql<{ weekday: number; open: string; close: string }[]>`
+      select weekday, to_char(min(start_time), 'HH24:MI') as open, to_char(max(end_time), 'HH24:MI') as close
+      from working_hours wh join barbers b on b.id = wh.barber_id where b.active
+      group by weekday`,
+  ]);
+
+  const byWeekday = new Map(hours.map((h) => [h.weekday, h]));
+  const weekOrder = [1, 2, 3, 4, 5, 6, 0];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="mx-auto w-full max-w-xl px-4 pb-16">
+      <header className="flex flex-col items-center pt-14 pb-10 text-center">
+        <div className="mb-5 grid size-20 place-items-center rounded-full border border-accent/40 bg-surface text-3xl">
+          💈
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <h1 className="display text-4xl font-semibold">{settings.shop_name}</h1>
+        {settings.address && <p className="mt-2 text-muted">{settings.address}</p>}
+        <Link href="/marcar" className="btn-primary mt-8 w-full max-w-xs py-3.5 text-base">
+          Marcar agora
+        </Link>
+      </header>
+
+      <section className="card divide-y divide-line">
+        <h2 className="display px-5 pt-5 pb-3 text-sm text-muted">Serviços</h2>
+        {services.map((s) => (
+          <Link
+            key={s.id}
+            href={`/marcar?servico=${s.id}`}
+            className="flex items-center justify-between px-5 py-4 transition-colors hover:bg-surface-2"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <div>
+              <div className="font-medium">{s.name}</div>
+              <div className="text-sm text-muted">{s.duration_min} min</div>
+            </div>
+            <div className="font-semibold text-accent">{euros(s.price_cents)}</div>
+          </Link>
+        ))}
+      </section>
+
+      <section className="mt-4 grid gap-4 sm:grid-cols-2">
+        <div className="card p-5">
+          <h2 className="display mb-3 text-sm text-muted">Horário</h2>
+          <ul className="space-y-1 text-sm">
+            {weekOrder.map((d) => {
+              const h = byWeekday.get(d);
+              return (
+                <li key={d} className="flex justify-between">
+                  <span className="text-muted">{WEEKDAYS[d]}</span>
+                  <span>{h ? `${h.open} – ${h.close}` : "Fechado"}</span>
+                </li>
+              );
+            })}
+          </ul>
         </div>
-      </main>
-    </div>
+        <div className="card p-5">
+          <h2 className="display mb-3 text-sm text-muted">Equipa</h2>
+          <ul className="space-y-2">
+            {barbers.map((b) => (
+              <li key={b.id} className="flex items-center gap-3">
+                <span className="grid size-9 place-items-center rounded-full bg-surface-2 font-semibold text-accent">
+                  {b.name[0]}
+                </span>
+                {b.name}
+              </li>
+            ))}
+          </ul>
+          {(settings.phone || settings.instagram) && (
+            <div className="mt-4 space-y-1 border-t border-line pt-4 text-sm">
+              {settings.phone && (
+                <a className="block text-muted hover:text-fg" href={`tel:${settings.phone}`}>
+                  📞 {settings.phone}
+                </a>
+              )}
+              {settings.instagram && (
+                <a
+                  className="block text-muted hover:text-fg"
+                  href={`https://instagram.com/${settings.instagram.replace("@", "")}`}
+                >
+                  📷 {settings.instagram}
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+    </main>
   );
 }
