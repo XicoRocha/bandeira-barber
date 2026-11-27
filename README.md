@@ -8,7 +8,7 @@ Projeto de Engenharia Informática (ISLA — Instituto Politécnico de Gestão e
 | Orientador | Professor José Augusto Monteiro |
 | Product Owner | Proprietário da Bandeira Barber |
 | Fase atual | Planeamento — Sprint 1 (E1 a E4), a fechar a 29 de novembro de 2026 |
-| Quadro Scrum | [PREENCHER: URL do GitHub Projects] |
+| Quadro Scrum | [Bandeira Barber — Scrum](https://github.com/users/XicoRocha/projects/2) |
 
 ## Onde está o quê
 
