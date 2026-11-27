@@ -1,6 +1,6 @@
 # Documentos do projeto
 
-Cada documento das entregas é um item do quadro Scrum ([PREENCHER: URL do GitHub Projects]).
+Cada documento das entregas é um item do quadro Scrum ([Bandeira Barber — Scrum](https://github.com/users/XicoRocha/projects/2)).
 O relatório de cada entrega fica em [`relatorio/`](relatorio/).
 
 | Doc. | Documento | Entrega | Prazo | Secção do relatório | Onde |
