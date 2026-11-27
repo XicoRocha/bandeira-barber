@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| Etiqueta | `v0-prototipo-exploratorio` |
+| Onde está | Branch [`prototipo-v0`](https://github.com/XicoRocha/bandeira-barber/tree/prototipo-v0) e etiqueta `v0-prototipo-exploratorio` |
 | Commits | `510adff` (25 set 2026, criação do projeto Next.js) e `422da54` (28 set 2026, app de marcações) |
 | Feito por | [PREENCHER] |
 | Antes do projeto? | Sim. O projeto começou formalmente a 2 de novembro de 2026 |
