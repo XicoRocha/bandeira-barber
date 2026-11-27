@@ -20,6 +20,7 @@ Seguindo a Design Science Research (secção 1.4 do relatório), o protótipo é
 1. Os requisitos são levantados nas entregas E5 e E6 a partir do Product Owner e da literatura, **sem partir do código**.
 2. Só depois o protótipo é comparado com cada requisito, e o resultado (cumprido, cumprido em parte, em falta, a corrigir) fica na matriz de rastreabilidade (secção 2.9).
 3. A partir daí, qualquer alteração ao código parte de um item do quadro ligado ao requisito que a justifica.
+4. O protótipo revisto é apresentado como **Documento 22 (Wireframes ou protótipo)**, na entrega E7.
 
 ## Limitações conhecidas
 

@@ -7,7 +7,7 @@
 #   DRY_RUN=1 bash docs/quadro/criar-quadro.sh   # primeiro só mostra o que vai fazer
 #   bash docs/quadro/criar-quadro.sh             # depois cria mesmo
 #
-# Antes de correr: confirmem com o enunciado a numeração dos documentos 17 a 23 (lista DOCS em baixo).
+# A lista DOCS segue o cronograma enviado pelo orientador.
 # Os documentos 1 a 6 ficam fechados (concluídos), com um comentário a dizer que foram registados depois de feitos.
 # Os 7 e 8 ficam abertos (revistos na E4), os 9 a 12 abertos (E4 em curso) e os 13 a 28 abertos (a fazer).
 
@@ -38,24 +38,24 @@ DOCS=(
   "8|Matriz de projetos similares ou concorrentes|E3|2026-11-22|Sprint 1|2.2"
   "9|Lacuna e contribuição|E4|2026-11-29|Sprint 1|2.3"
   "10|Metodologia|E4|2026-11-29|Sprint 1|1.4"
-  "11|Riscos v1|E4|2026-11-29|Sprint 1|3.5"
-  "12|Documento de enquadramento v1|E4|2026-11-29|Sprint 1|Cap. 1, 2.1–2.3, Anexo A"
+  "11|Registo de riscos v1|E4|2026-11-29|Sprint 1|3.5"
+  "12|Documento de enquadramento v1 (com Sprint Review e Retrospective do Sprint 1)|E4|2026-11-29|Sprint 1|Cap. 1, 2.1–2.3, Anexo A"
   "13|Stakeholders e personas|E5|2026-12-06|Sprint 2|2.4"
   "14|Product Vision|E5|2026-12-06|Sprint 2|2.4"
-  "15|Product Backlog|E5|2026-12-06|Sprint 2|2.5"
-  "16|User Stories|E5|2026-12-06|Sprint 2|2.5"
+  "15|Product Backlog (épicos)|E5|2026-12-06|Sprint 2|2.5"
+  "16|User Stories com critérios de aceitação|E5|2026-12-06|Sprint 2|2.5"
   "17|Requisitos funcionais|E6|2026-12-13|Sprint 2|2.6"
   "18|Requisitos não funcionais|E6|2026-12-13|Sprint 2|2.7"
-  "19|Casos de uso|E6|2026-12-13|Sprint 2|2.8"
+  "19|Casos de uso (diagrama e especificação)|E6|2026-12-13|Sprint 2|2.8"
   "20|Definition of Ready e Definition of Done|E6|2026-12-13|Sprint 2|1.4, Anexo B"
-  "21|Modelo de domínio|E7|2026-12-20|Sprint 2|4.1"
-  "22|Arquitetura e tecnologias|E7|2026-12-20|Sprint 2|3.1–3.3"
-  "23|Wireframes, plano e casos de teste|E7|2026-12-20|Sprint 2|4.3, 4.4"
-  "24|Estimativas|E8|2027-01-03|Sprint 2|3.4"
-  "25|Riscos v2|E8|2027-01-03|Sprint 2|3.5"
+  "21|Modelo de domínio, arquitetura e tecnologias|E7|2026-12-20|Sprint 2|3.1–3.3, 4.1"
+  "22|Wireframes ou protótipo|E7|2026-12-20|Sprint 2|4.3"
+  "23|Plano e casos de teste|E7|2026-12-20|Sprint 2|4.4"
+  "24|Estimativas e priorização|E8|2027-01-03|Sprint 2|3.4"
+  "25|Registo de riscos v2|E8|2027-01-03|Sprint 2|3.5"
   "26|Matriz de rastreabilidade|E8|2027-01-03|Sprint 2|2.9"
   "27|Roadmap e Sprint Backlog|E8|2027-01-03|Sprint 2|5.1"
-  "28|Relatório consolidado|E8|2027-01-03|Sprint 2|Todo o relatório"
+  "28|Documento de Planeamento consolidado|E8|2027-01-03|Sprint 2|Todo o relatório"
 )
 
 echo "== Etiquetas"
